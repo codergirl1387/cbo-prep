@@ -9,7 +9,7 @@ import { todayString } from '@/lib/utils/date';
 // Protected by CRON_SECRET to prevent unauthorized calls
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${process.env.APP_CRON_KEY}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

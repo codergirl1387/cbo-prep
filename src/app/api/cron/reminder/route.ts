@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 // Vercel calls this at 2:40 PM EST (19:40 UTC) every day
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${process.env.APP_CRON_KEY}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
