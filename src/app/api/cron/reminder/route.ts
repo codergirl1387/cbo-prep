@@ -17,21 +17,23 @@ export async function GET() {
   });
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://cbo-prep.vercel.app';
+  const recipientName = process.env.RECIPIENT_NAME || 'there';
+  const examDate = process.env.EXAM_DATE || 'your exam';
 
   try {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: recipient,
-      subject: `⏰ Time to study, Netra! Today's flashcards are waiting`,
+      subject: `⏰ Time to study! Today's flashcards are waiting`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:500px;margin:0 auto">
-          <h2 style="color:#2563eb">Hey Netra! 🧬</h2>
+          <h2 style="color:#2563eb">Hey ${recipientName}! 🧬</h2>
           <p style="font-size:16px;color:#333">
             It's study time! Your daily biology flashcards and quiz are ready for you.
           </p>
           <p style="color:#555">
             Taking just 10 minutes now to review today's cards will make a big difference
-            before the CBO on April 9th.
+            before your exam on ${examDate}.
           </p>
           <a href="${baseUrl}/flashcards"
              style="display:inline-block;margin-top:16px;padding:14px 28px;background:#2563eb;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;font-size:15px">
