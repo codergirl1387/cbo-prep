@@ -6,6 +6,7 @@ import { getTodayQuizSession } from '@/lib/db/queries/sessions';
 import { todayString, daysUntilExam } from '@/lib/utils/date';
 import { SeedButton } from '@/components/shared/SeedButton';
 import { EmailButtons } from '@/components/shared/EmailButtons';
+import { ensureMigrated } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,7 @@ function getGreeting() {
 }
 
 export default async function DashboardPage() {
+  await ensureMigrated();
   const today = todayString();
   const [totalQuestions, recentSessions, todayCards, reviewedToday, todayQuiz] = await Promise.all([
     getTotalQuestionCount(),
