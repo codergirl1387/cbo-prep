@@ -1,19 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { generateDailyFlashcards } from '@/lib/ai/flashcard-generator';
 import { generateDailyQuiz } from '@/lib/ai/quiz-generator';
 import { sendFlashcardsEmail } from '@/lib/email/mailer';
 import { getTodayCards } from '@/lib/db/queries/flashcards';
 import { todayString } from '@/lib/utils/date';
+import { ensureMigrated } from '@/lib/db';
 
-// Vercel calls this endpoint at 6:00 AM EST every day (11:00 UTC)
-// Protected by CRON_SECRET to prevent unauthorized calls
-export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.APP_CRON_KEY}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
+// Vercel invokes this at 11:00 UTC (6:00 AM EST) every day via vercel.json cron config
+export async function GET() {
   try {
+    await ensureMigrated();
     console.log('[Cron/Daily] Starting daily content generation...');
 
     await generateDailyFlashcards();
