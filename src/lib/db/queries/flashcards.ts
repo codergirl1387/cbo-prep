@@ -40,6 +40,35 @@ export async function recordCardReview(cardId: number, result: 'easy' | 'hard' |
   });
 }
 
+export async function getAgainQueueCards(): Promise<StudyCard[]> {
+  const db = getDb();
+  const result = await db.execute(`
+    SELECT sc.* FROM study_cards sc
+    WHERE (
+      SELECT result FROM card_reviews
+      WHERE card_id = sc.id
+      ORDER BY reviewed_at DESC
+      LIMIT 1
+    ) = 'again'
+    ORDER BY sc.id
+  `);
+  return result.rows.map((r) => rowToCard(r as Record<string, unknown>));
+}
+
+export async function getAgainQueueCount(): Promise<number> {
+  const db = getDb();
+  const result = await db.execute(`
+    SELECT COUNT(*) as count FROM study_cards sc
+    WHERE (
+      SELECT result FROM card_reviews
+      WHERE card_id = sc.id
+      ORDER BY reviewed_at DESC
+      LIMIT 1
+    ) = 'again'
+  `);
+  return result.rows[0].count as number;
+}
+
 export async function getTodayReviewedCount(date: string): Promise<number> {
   const db = getDb();
   const result = await db.execute({
